@@ -40,9 +40,9 @@ function endTurn(player, cube){
     player1.turn = !player1.turn;
     player2.turn = !player2.turn;
     
-    console.log(player1.cubes);
-    console.log(player2.cubes);
-    console.log("-------------------------");
+    //console.log(player1.cubes);
+    //console.log(player2.cubes);
+    //console.log("-------------------------");
     
     hasWon();
 }
@@ -116,10 +116,3 @@ function hasSameSlope(cube1,cube2,cube3){
     
     return false;
 }
-
-
-
-
-
-
-

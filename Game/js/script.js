@@ -9,27 +9,6 @@ renderer.setClearColor( 0xa0a0a0 );
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-/*
-Game board to be kept track of
-*/
-gameBoardTop = [
-    [0,0,0],
-    [0,0,0],
-    [0,0,0]
-];
-
-gameBoardMiddle = [
-    [0,0,0],
-    [0,0,0],
-    [0,0,0]
-];
-
-gameBoardBottom = [
-    [0,0,0],
-    [0,0,0],
-    [0,0,0]
-];
-
 function placeInGameBoard(coord, player){
     if(coord.z === 0){
         //middle
@@ -41,52 +20,6 @@ function placeInGameBoard(coord, player){
         //bottom
         gameBoardBottom[coord.x + 1][coord.y + 1] = player.id;
     }
-
-    //console.log(gameBoardBottom);
-    //console.log(gameBoardMiddle);
-    //console.log(gameBoardTop);
-    //console.log('----------------------------');
-}
-
-function checkWin(o, id){
-    if(checkHorizontals(id) != 0)
-        console.log("winner:  " + id);
-}
-
-function checkHorizontals(id){
-    if(checkLines(gameBoardTop, id) != 0)
-        return id;
-    if(checkLines(gameBoardMiddle, id) != 0)
-        return id;
-    if(checkLines(gameBoardBottom, id) != 0)
-        return id;
-
-    return 0;
-}
-
-function checkLines(gb, id){
-    for(var i = 0; i < 3; i++){
-        if(gb[i][0] == gb[i][1])
-            if(gb[i][1] == gb[i][2])
-                if(gb[i][0] == gb[i][2])
-                    return gb[i][0];
-    }
-    for(var i = 0; i < 3; i++){
-        if(gb[0][i] == gb[1][i])
-            if(gb[1][i] == gb[2][i])
-                if(gb[2][i] == gb[0][i])
-                    return gb[0][i];
-    }
-
-    return 0;
-}
-
-function checkVerticals(){
-
-}
-
-function checkHorizontals(){
-
 }
 
 //Origin is the main cube
@@ -362,38 +295,3 @@ function contractTo(){
         contract();
     }
 }
-
-var solutions = [
-//Horizontal
-    //front back
-    [[-1,1,1],[-1,0,1],[-1,-1,1]],
-    [[0,1,1],[0,0,1],[0,-1,1]],
-    [[1,1,1],[1,0,1],[1,-1,1]],
-    [[-1,1,0],[-1,0,0],[-1,-1,0]],
-    [[0,1,0],[0,0,0],[0,-1,0]],
-    [[1,1,0],[1,0,0],[1,-1,0]],
-    [[-1,1,-1],[-1,0,-1],[-1,-1,-1]],
-    [[0,1,-1],[0,0,-1],[0,-1,-1]],
-    [[1,1,-1],[1,0,-1],[1,-1,-1]],
-    //side to side
-    [[-1,1,1],[0,1,1],[1,1,1]],
-    [[-1,0,1],[0,0,1],[1,0,1]],
-    [[-1,-1,1],[0,-1,1],[1,-1,1]],
-    [[-1,1,0],[0,1,0],[1,1,0]],
-    [[01,0,0],[0,0,0],[1,0,0]],
-    [[-1,-1,0],[0,-1,0],[1,-1,0]],
-    [[-1,1,-1],[0,1,-1],[1,1,-1]],
-    [[-1,0,-1],[0,0,-1],[1,0,-1]],
-    [[-1,-1,-1],[1,-1,-1],[1,-1,-1]],
-
-//Diagnals
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    [],
-    []
-];
