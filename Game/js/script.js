@@ -85,6 +85,7 @@ camera.position.z = 5;
 This function is the main render function for everything in the game. It is used so that when a user navagates away from the window it does not use any computer resources.
 */
 function render(){
+    //drawHeader();
     requestAnimationFrame(render);
     renderer.render(scene, camera);
 }
