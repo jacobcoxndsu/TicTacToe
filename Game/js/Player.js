@@ -57,7 +57,7 @@ function hasWon(){
                         if(hasSameSlope(player1.cubes[i],                                 player1.cubes[j],
                                         player1.cubes[k])
                                         ){
-                            console.log("player1 wins");
+                            win(1);
                         }
                     }
                 }
@@ -74,7 +74,7 @@ function hasWon(){
                         if(hasSameSlope(player2.cubes[i],                                 player2.cubes[j],
                                         player2.cubes[k])
                                         ){
-                            console.log("player2 wins");
+                            win(2);
                         }
                     }
                 }

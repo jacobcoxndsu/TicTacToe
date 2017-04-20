@@ -4,10 +4,16 @@ var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHei
 var expanded = false;
 var clickedSpaceBar = false;
 
+var headerSize = 50;
+var playing = true;
+
 var renderer = new THREE.WebGLRenderer();
 renderer.setClearColor( 0xa0a0a0 );
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
+
+var clickCorrect = new Audio("ping-bing.wav");
+var clickWrong = new Audio("bonk-click-deny-feel.wav");
 
 function placeInGameBoard(coord, player){
     if(coord.z === 0){
@@ -108,49 +114,61 @@ var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
 
 document.onmousedown = function(event){
-    isDragging = true;
-
-    mouse.x = (event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
-    mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
-
-    raycaster.setFromCamera(mouse, camera);
-
-    var intersects = raycaster.intersectObjects(cubes);
-
-    if(intersects.length > 0){
-        if(intersects[0].object.playerID == null){
-            intersects[0].object.playerID = getCurrentPlayer().id;
-            intersects[0].object.material.color.setHex(getCurrentPlayer().color);
-            intersects[0].object.material.opacity = 0.9;
-
-            endTurn(getCurrentPlayer(), intersects[0]); 
-        }
-        else{
-            console.log('Piece taken');
-        }
+    if(playing){
+        isDragging = true;
     }
 }
 
 document.onmousemove = function(e){
-    var deltaMove = {
-        x: e.offsetX - previousMousePosition.x,
-        y: e.offsetY - previousMousePosition.y
-    }
+    if(playing){
+        var deltaMove = {
+            x: e.offsetX - previousMousePosition.x,
+            y: e.offsetY - previousMousePosition.y
+        }
 
-    if(isDragging){
-        var deltaRotationQuaternion = new THREE.Quaternion().setFromEuler(new THREE.Euler(toRadians(deltaMove.y * 1), toRadians(deltaMove.x * 1), 0, 'XYZ'));
+        if(isDragging){
+            var deltaRotationQuaternion = new THREE.Quaternion().setFromEuler(new THREE.Euler(toRadians(deltaMove.y * 1), toRadians(deltaMove.x * 1), 0, 'XYZ'));
 
-        parentCube.quaternion.multiplyQuaternions(deltaRotationQuaternion, parentCube.quaternion);
-    }
+            parentCube.quaternion.multiplyQuaternions(deltaRotationQuaternion, parentCube.quaternion);
+        }
 
-    previousMousePosition = {
-        x: e.offsetX,
-        y: e.offsetY
+        previousMousePosition = {
+            x: e.offsetX,
+            y: e.offsetY
+        }
     }
 }
 
 document.onmouseup = function(e){
     isDragging = false;
+}
+
+document.ondblclick = function(e){
+    if(playing){
+        mouse.x = (event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
+        mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, camera);
+
+        var intersects = raycaster.intersectObjects(cubes);
+
+        if(intersects.length > 0){
+            if(intersects[0].object.playerID == null){
+                clickCorrect.currentTime = 0;
+                clickCorrect.play();
+                intersects[0].object.playerID = getCurrentPlayer().id;
+                intersects[0].object.material.color.setHex(getCurrentPlayer().color);
+                intersects[0].object.material.opacity = 0.9;
+                endTurn(getCurrentPlayer(), intersects[0]); 
+            }
+            else{
+                clickWrong.currentTime = 0;
+                clickWrong.play();
+                console.log('Piece taken');
+            }
+        }
+    }
+    
 }
 
 function toRadians(angle) {
@@ -162,7 +180,15 @@ function toDegrees(angle) {
 }
 
 
-
+function win(num){
+    console.log("win");
+    playing = false;
+    if(num == 1){
+        displayWinner(num);
+    } else if(num == 2){
+        displayWinner(num);
+    }
+}
 
 
 
