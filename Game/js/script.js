@@ -6,14 +6,15 @@ var clickedSpaceBar = false;
 
 var headerSize = 50;
 var playing = true;
+var sound = true;
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setClearColor( 0xa0a0a0 );
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-var clickCorrect = new Audio("ping-bing.wav");
-var clickWrong = new Audio("bonk-click-deny-feel.wav");
+var clickCorrect = new Audio("sounds/ping-bing.wav");
+var clickWrong = new Audio("sounds/bonk-click-deny-feel.wav");
 
 function placeInGameBoard(coord, player){
     if(coord.z === 0){
@@ -114,28 +115,28 @@ var raycaster = new THREE.Raycaster();
 var mouse = new THREE.Vector2();
 
 document.onmousedown = function(event){
-    if(playing){
-        isDragging = true;
+    isDragging = true;
+    
+    if(!playing){
+        
     }
 }
 
 document.onmousemove = function(e){
-    if(playing){
-        var deltaMove = {
-            x: e.offsetX - previousMousePosition.x,
-            y: e.offsetY - previousMousePosition.y
-        }
+    var deltaMove = {
+        x: e.offsetX - previousMousePosition.x,
+        y: e.offsetY - previousMousePosition.y
+    }
 
-        if(isDragging){
-            var deltaRotationQuaternion = new THREE.Quaternion().setFromEuler(new THREE.Euler(toRadians(deltaMove.y * 1), toRadians(deltaMove.x * 1), 0, 'XYZ'));
+    if(isDragging){
+        var deltaRotationQuaternion = new THREE.Quaternion().setFromEuler(new THREE.Euler(toRadians(deltaMove.y * 1), toRadians(deltaMove.x * 1), 0, 'XYZ'));
 
-            parentCube.quaternion.multiplyQuaternions(deltaRotationQuaternion, parentCube.quaternion);
-        }
+        parentCube.quaternion.multiplyQuaternions(deltaRotationQuaternion, parentCube.quaternion);
+    }
 
-        previousMousePosition = {
-            x: e.offsetX,
-            y: e.offsetY
-        }
+    previousMousePosition = {
+        x: e.offsetX,
+        y: e.offsetY
     }
 }
 
@@ -155,7 +156,8 @@ document.ondblclick = function(e){
         if(intersects.length > 0){
             if(intersects[0].object.playerID == null){
                 clickCorrect.currentTime = 0;
-                clickCorrect.play();
+                if(sound)
+                    clickCorrect.play();
                 intersects[0].object.playerID = getCurrentPlayer().id;
                 intersects[0].object.material.color.setHex(getCurrentPlayer().color);
                 intersects[0].object.material.opacity = 0.9;
@@ -163,7 +165,8 @@ document.ondblclick = function(e){
             }
             else{
                 clickWrong.currentTime = 0;
-                clickWrong.play();
+                if(sound)
+                    clickWrong.play();
                 console.log('Piece taken');
             }
         }
@@ -182,12 +185,14 @@ function toDegrees(angle) {
 
 function win(num){
     console.log("win");
-    playing = false;
-    if(num == 1){
-        displayWinner(num);
-    } else if(num == 2){
-        displayWinner(num);
+    if(playing == true){
+        if(num == 1){
+            displayWinner(num);
+        } else if(num == 2){
+            displayWinner(num);
+        }
     }
+    playing = false;
 }
 
 
@@ -305,6 +310,26 @@ function contract(){
     }
 }
 
+//methods that control the buttons
+var soundButton = document.getElementById('soundButton');
+var currentPlayerButton = document.getElementById('currentPlayer');
+
+currentPlayerButton.style.background = player1.buttonColor;
+
+soundButton.onclick = function(){
+    sound = !sound;
+    if(sound){
+        soundButton.style.background = "#f2f2f2";
+        soundButton.style.color = "#404040";
+    } else if(!sound) {
+        soundButton.style.background = "#404040";
+        soundButton.style.color = "#f2f2f2";
+        clickCorrect.currentTime = 0;
+        clickWrong.currentTime = 0;
+        boom.currentTime = 0;
+    }
+}
+
 /*
 This method creates the stems nesesary for the expand to happen as it calles expand the required times to make it "fully" expand.
 */
@@ -321,4 +346,10 @@ function contractTo(){
     for(var i = 0; i < 100; i++){
         contract();
     }
+}
+
+function IncludeJavaScript(jsFile)
+{
+  document.write('<script type="text/javascript" src="'
+    + jsFile + '"></scr' + 'ipt>'); 
 }

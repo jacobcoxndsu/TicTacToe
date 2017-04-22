@@ -7,6 +7,7 @@ function Player(){
     this.score =  0;
     this.turn = false;
     this.color = 0x000000;
+    this.buttonColor = "#000000";
     this.cubes = [];
     
     this.addCube = function(cube){
@@ -18,9 +19,11 @@ function Player(){
 var player1 = new Player();
 player1.id = 1;
 player1.color = 0xff0000;
+player1.buttonColor = "#ff0000";
 var player2 = new Player();
 player2.id = 2;
 player2.color = 0x0000ff;
+player2.buttonColor = "#0000ff";
 
 //Set Player1's turn to true;
 player1.turn = true;
@@ -39,6 +42,14 @@ function endTurn(player, cube){
     player.addCube(cube);
     player1.turn = !player1.turn;
     player2.turn = !player2.turn;
+    
+    if(player1.turn){
+        currentPlayerButton.style.background = player1.buttonColor;
+        currentPlayerButton.innerHTML = "Red's Turn";
+    } else if(player2.turn) {
+        currentPlayerButton.style.background = player2.buttonColor;
+        currentPlayerButton.innerHTML = "Blue's Turn";
+    }
     
     //console.log(player1.cubes);
     //console.log(player2.cubes);
